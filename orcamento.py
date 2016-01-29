@@ -23,8 +23,16 @@ class Estado_de_um_orcamento(object):
 		pass
 
 class Em_aprovacao(Estado_de_um_orcamento):
+
+	def __init__(self):
+		self.__ja_aplicado = False
+
 	def aplica_desconto_extra(self, orcamento):
-		orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+		if(self.__ja_aplicado == False):
+			self.__ja_aplicado = True
+			orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+		else:
+			raise Exception('Desconto já aplicado!')
 
 	def aprova(self, orcamento):
 		orcamento.estado_atual = Aprovado()
@@ -37,8 +45,16 @@ class Em_aprovacao(Estado_de_um_orcamento):
 
 
 class Aprovado(Estado_de_um_orcamento):
+	
+	def __init__(self):
+		self.__ja_aplicado = False
+
 	def aplica_desconto_extra(self, orcamento):
-		orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+		if(self.__ja_aplicado == False):
+			self.__ja_aplicado = True
+			orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+		else:
+			raise Exception('Desconto já aplicado!')
 
 	def aprova(self, orcamento):
 		raise Exception('Orçamento já está aprovado!')
@@ -140,6 +156,10 @@ if __name__ == '__main__':
 	orcamento.adiciona_item(Item('ITEM 03', 400))
 
 	print orcamento.valor
+	orcamento.aplica_desconto_extra()
+	print orcamento.valor
 	orcamento.aprova()
-	orcamento.finaliza()
-
+	orcamento.aplica_desconto_extra()
+	print orcamento.valor
+	orcamento.aplica_desconto_extra()
+	print orcamento.valor
