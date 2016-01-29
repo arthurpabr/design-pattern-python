@@ -2,15 +2,33 @@
 
 from abc import ABCMeta, abstractmethod # módulo abstract class
 
-class Template_de_imposto_condicional(object):
+class Imposto(object):
+
+	# um imposto conhece "o próximo", possibilitando assim que seja implementada
+	# no método 'calcula' uma 'composição' de cálculos de impostos
+	def __init__(self, outro_imposto = None):
+		self.__outro_imposto = outro_imposto
+
+	def calculo_do_outro_imposto(self, orcamento):
+		if self.__outro_imposto is None:
+			return 0
+		else:
+			return self.__outro_imposto.calcula(orcamento)
+
+	@abstractmethod
+	def calcula(self, orcamento):
+		pass
+
+
+class Template_de_imposto_condicional(Imposto):
 
 	__metaclass__ = ABCMeta # indicando que a classe será abstrata
 
 	def calcula(self, orcamento):
 		if self.deve_usar_maxima_taxacao(orcamento):
-			return self.maxima_taxacao(orcamento)
+			return self.maxima_taxacao(orcamento) + self.calculo_do_outro_imposto(orcamento)
 		else:
-			return self.minima_taxacao(orcamento)
+			return self.minima_taxacao(orcamento) + self.calculo_do_outro_imposto(orcamento)
 
 	# o uso da classe abstrata e seus métodos são exemplos do design pattern
 	# Template method - uma mesma estrutura é aplicável a diferentes situações
@@ -29,17 +47,27 @@ class Template_de_imposto_condicional(object):
 	def minima_taxacao(orcamento):
 		pass
 
+# criando um Decorator NATIVO do Python
+# O IPVX vai pegar o valor e somar R$50,00
+# Este Decorator NATIVO é rígido, com relação à criação de um decorator via desig pattern
+def IPVX(metodo_ou_funcao):
+	def wrapper(self, orcamento):
+		return metodo_ou_funcao(self, orcamento) + 50.5
+	return wrapper
 
-class ISS(object):
-		
+
+class ISS(Imposto):
+	
+	@IPVX		
 	def calcula(self, orcamento):
-		return orcamento.valor * 0.1
+		return orcamento.valor * 0.1 + self.calculo_do_outro_imposto(orcamento)
 
 
-class ICMS(object):
+class ICMS(Imposto):
 
+	@IPVX
 	def calcula(self, orcamento):
-		return orcamento.valor * 0.6
+		return orcamento.valor * 0.6 + self.calculo_do_outro_imposto(orcamento)
 
 
 class ICPP(Template_de_imposto_condicional):

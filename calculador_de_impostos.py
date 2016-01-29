@@ -18,12 +18,9 @@ if __name__ == '__main__':
 	from orcamento import Orcamento, Item
 
 	orcamento = Orcamento()
-	orcamento.adiciona_item(Item('ITEM 01', 100))
-	orcamento.adiciona_item(Item('ITEM 02', 50))
-	orcamento.adiciona_item(Item('ITEM 03', 400))
-	orcamento.adiciona_item(Item('ITEM 04', 400))
-	orcamento.adiciona_item(Item('ITEM 05', 500))
-	orcamento.adiciona_item(Item('ITEM 06', 40))
+	orcamento.adiciona_item(Item('ITEM 01', 50))
+	orcamento.adiciona_item(Item('ITEM 02', 200))
+	orcamento.adiciona_item(Item('ITEM 03', 250))
 
 	calculador = Calculador_de_impostos()
 	
@@ -34,3 +31,6 @@ if __name__ == '__main__':
 	print 'ICPP e IKCV'
 	calculador.realiza_calculo(orcamento, ICPP())
 	calculador.realiza_calculo(orcamento, IKCV())
+
+	print 'ICPP composto com IKCV'
+	calculador.realiza_calculo(orcamento, IKCV(ICPP()))
