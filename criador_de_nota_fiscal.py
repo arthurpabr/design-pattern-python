@@ -11,6 +11,7 @@ class Criador_de_nota_fiscal(object):
 		self.__data_de_emissao = None
 		self.__itens = None
 		self.__detalhes = None
+		self.__observadores = None
 	
 	def com_razao_social(self, razao_social):
 		self.__razao_social = razao_social
@@ -32,6 +33,10 @@ class Criador_de_nota_fiscal(object):
 		self.__detalhes = detalhes
 		return self
 
+	def com_observadores(self, observadores):
+		self.__observadores = observadores
+		return self
+
 	def constroi(self):
 		if self.__razao_social is None:
 			raise Exception('Razão social deve ser preenchida')
@@ -43,9 +48,12 @@ class Criador_de_nota_fiscal(object):
 			self.__data_de_emissao = date.today()
 		if self.__detalhes is None:
 			self.__detalhes = ''
+		if self.__observadores is None:
+			self.__observadores = []
 		
 		return Nota_fiscal(razao_social=self.__razao_social,
 				cnpj=self.__cnpj,
 				data_de_emissao=self.__data_de_emissao,
 				itens=self.__itens,
-				detalhes=self.__detalhes)
+				detalhes=self.__detalhes,
+				observadores=self.__observadores)
